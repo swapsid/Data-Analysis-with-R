@@ -1,0 +1,77 @@
+<!-- Loading Library -->
+library(repurrrsive)
+
+<!-- Function 1 : get_sw_people_heights -->
+<!-- Creating an empty list and returning only the names and heights from the dataset -->
+<!-- Replacing unknown with NA -->
+get_sw_people_heights <- function(input_data){
+  out_list = list()
+  for (i in 1:length(input_data)){
+    if(input_data[[i]]$height == "unknown"){
+      height <- NA
+    }
+    else{
+      height <- as.double(input_data[[i]]$height)
+    }
+    out_list[[i]] <- list('name'=input_data[[i]]$name, 'height'=height)
+  }
+  out_list
+}
+
+my_list <- sw_people
+data_set <- get_sw_people_heights(my_list)
+str(data_set[1:2])
+
+
+
+<!-- Function 2 : clean_heights -->
+<!-- Creating a logical vector that holds True for records with heights present and False for records with NA -->
+<!-- Using the logical vector to filter out records with height NA -->
+clean_heights <- function(input_data){
+  na_absent <- vector()
+  for (i in 1:length(input_data)){
+    na_absent <- c(na_absent, !is.na(input_data[[i]]$height))
+  }
+  input_data[na_absent]
+}
+
+clean_data_set <- clean_heights(data_set)
+length(data_set)
+length(clean_data_set)
+
+<!-- Function 2 : clean_heights -->
+<!-- An alternate approach to perform the above operation with filter function -->
+clean_data_set1 <- Filter(function(data) !is.na(data$height), data_set)
+length(clean_data_set1)
+
+
+
+
+<!-- Function 3 : get_height_range -->
+<!-- Constructing a logical vector similar to the previous approach  -->
+<!-- Filtering out the records using the logical vector -->
+get_height_range <- function(input_data, min_height, max_height){
+  height_vector <- vector()
+  for (i in 1:length(input_data)){
+    if(input_data[[i]]$height >=  min_height & input_data[[i]]$height <=  max_height){
+      height_vector <- c(height_vector, T)
+    }
+    else{
+      height_vector <- c(height_vector, F)
+    }
+  }
+  input_data[height_vector]
+}
+
+range <- get_height_range(clean_data_set, 174, 175)
+range
+
+<!-- Function 4 : tidy_output -->
+<!-- Using the paste function to output the processed data -->
+tidy_output <- function(input_data){   
+  paste(input_data)
+}
+
+result <- tidy_output(range)
+result
+
